@@ -18,6 +18,9 @@ coverage/
 .env.test.local
 .env.production.local
 
+# Keep .env.example for documentation
+!.env.example
+
 # IDE/Editor files
 .vscode/
 .idea/
