@@ -1,3 +1,8 @@
+# License
+
+This project is released into the public domain under [The Unlicense](LICENSE).
+You may use, copy, modify, and distribute it for any purpose, without restriction.
+
 # Divera Probe Alarm
 
 A Node.js TypeScript service for creating alarms via the Divera247 API. Built with ESLint and Jest testing framework.

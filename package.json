@@ -26,7 +26,7 @@
     "jest"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Unlicense",
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/jest": "^29.5.5",
