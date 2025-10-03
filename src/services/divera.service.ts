@@ -69,6 +69,35 @@ export class DiveraService {
   }
 
   /**
+   * Requests the last alarm in Divera247
+   * @returns Promise with the alarm response
+   */
+  async lastAlarm(): Promise<unknown> {
+    try {
+      const response: AxiosResponse<unknown> = await this.apiClient.get(
+        '/last-alarm' + `?accesskey=${this.apiKey}`
+      );
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorResponse: DiveraApiError = {
+          success: false,
+          error: error.response?.data?.error || error.message,
+          message: error.response?.data?.message || 'Failed to create alarm',
+        };
+        throw errorResponse;
+      }
+
+      throw {
+        success: false,
+        error: 'Unknown error occurred',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      } as DiveraApiError;
+    }
+  }
+
+  /**
    * Validates the API key by making a test request
    * @returns Promise<boolean> - true if API key is valid
    */

@@ -47,6 +47,18 @@ export const createDiveraAlarm = async (
   }
 };
 
+export const getDiveraAlarm = async (): Promise<void> => {
+  try {
+    const diveraService = new DiveraService();
+    console.log(`Using API key: ${diveraService.getApiKey()}`);
+
+    const response = await diveraService.lastAlarm();
+    console.log('Last alarm response:', response);
+  } catch (error) {
+    console.error('❌ Error getting last alarm:', error);
+  }
+};
+
 export const getCronConfigFromEnv = (): CronConfig => {
   return {
     pattern: process.env.CRON_PATTERN || '40 11 * * 6', // Default: Saturday at 11:40 AM
@@ -58,7 +70,7 @@ export const getCronConfigFromEnv = (): CronConfig => {
 };
 
 export const main = async (): Promise<void> => {
-  console.log(greeting('Divera Probe Alarm Service'));
+  console.log(greeting('this is the Alarm Service for Divera'));
 
   const cronConfig = getCronConfigFromEnv();
 
@@ -91,16 +103,17 @@ export const main = async (): Promise<void> => {
     console.log('\n🚨 One-time alarm mode (cron disabled)');
 
     // Load alarm configuration from environment variables
-    const alarmData = getAlarmConfigFromEnv();
+    // const alarmData = getAlarmConfigFromEnv();
 
-    console.log('\n� Creating alarm with configuration:');
-    console.log(`  Title: ${alarmData.title}`);
-    console.log(`  Text: ${alarmData.text}`);
-    console.log(`  Priority: ${alarmData.priority}`);
-    console.log(`  Address: ${alarmData.address}`);
-    console.log(`  Foreign ID: ${alarmData.foreign_id}`);
+    // console.log('\n� Creating alarm with configuration:');
+    // console.log(`  Title: ${alarmData.title}`);
+    // console.log(`  Text: ${alarmData.text}`);
+    // console.log(`  Priority: ${alarmData.priority}`);
+    // console.log(`  Address: ${alarmData.address}`);
+    // console.log(`  Foreign ID: ${alarmData.foreign_id}`);
 
-    await createDiveraAlarm(alarmData);
+    // await createDiveraAlarm(alarmData);
+    await getDiveraAlarm();
   }
 };
 

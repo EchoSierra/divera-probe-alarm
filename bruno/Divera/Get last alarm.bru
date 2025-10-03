@@ -1,0 +1,15 @@
+meta {
+  name: Get last alarm
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://app.divera247.com/api/last-alarm?accesskey={{apiKey}}
+  body: none
+  auth: none
+}
+
+params:query {
+  accesskey: {{apiKey}}
+}
