@@ -45,6 +45,11 @@ ALARM_TITLE=Test Alarm vom Divera Probe Service
 ALARM_TEXT=Dies ist ein Testalarm, der vom Divera Probe Alarm Service generiert wurde.
 ALARM_PRIORITY=1
 ALARM_ADDRESS=Testadresse, Teststadt
+
+# Optional: Cron/Scheduler configuration
+CRON_ENABLED=false
+CRON_PATTERN=40 11 * * 6
+CRON_TIMEZONE=Europe/Berlin
 ```
 
 ## Development
@@ -180,6 +185,42 @@ npm run dev
 ```
 
 This will create a test alarm using the configured API key.
+
+### Scheduled Alarms (Cron Mode)
+
+Enable scheduled alarms by setting `CRON_ENABLED=true`:
+
+```bash
+# Enable cron mode
+CRON_ENABLED=true
+
+# Run every Saturday at 11:40 AM German time (default)
+CRON_PATTERN=40 11 * * 6
+
+# Set timezone (handles daylight saving time automatically)
+CRON_TIMEZONE=Europe/Berlin
+
+npm run dev
+```
+
+The service will keep running and execute alarms according to the cron pattern.
+
+#### Cron Pattern Examples
+
+- `40 11 * * 6` - Every Saturday at 11:40 AM
+- `0 9 * * 1-5` - Every weekday at 9:00 AM
+- `*/30 * * * *` - Every 30 minutes
+- `0 8,12,18 * * *` - At 8:00, 12:00, and 18:00 daily
+- `0 0 1 * *` - First day of every month at midnight
+
+#### Timezone Support
+
+The service supports all timezone identifiers from the IANA timezone database, with automatic handling of daylight saving time transitions:
+
+- `Europe/Berlin` - German time (CET/CEST)
+- `Europe/London` - British time (GMT/BST)
+- `America/New_York` - Eastern time (EST/EDT)
+- `Asia/Tokyo` - Japan time (JST)
 
 ## API Reference
 

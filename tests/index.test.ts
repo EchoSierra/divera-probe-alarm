@@ -2,6 +2,7 @@ import {
   greeting,
   createDiveraAlarm,
   getAlarmConfigFromEnv,
+  getCronConfigFromEnv,
 } from '../src/index';
 import { DiveraService } from '../src/services/divera.service';
 import { DiveraAlarmRequest } from '../src/types/divera';
@@ -181,6 +182,61 @@ describe('Index functions', () => {
       expect(config1.foreign_id).not.toBe(config2.foreign_id);
       expect(config1.foreign_id).toMatch(/^alarm-\d+$/);
       expect(config2.foreign_id).toMatch(/^alarm-\d+$/);
+    });
+  });
+
+  describe('getCronConfigFromEnv function', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterAll(() => {
+      process.env = originalEnv;
+    });
+
+    it('should use environment variables when available', () => {
+      process.env.CRON_PATTERN = '0 8 * * 1';
+      process.env.CRON_TIMEZONE = 'Europe/Paris';
+      process.env.CRON_ENABLED = 'true';
+
+      const config = getCronConfigFromEnv();
+
+      expect(config.pattern).toBe('0 8 * * 1');
+      expect(config.timezone).toBe('Europe/Paris');
+      expect(config.enabled).toBe(true);
+    });
+
+    it('should use default values when environment variables are not set', () => {
+      delete process.env.CRON_PATTERN;
+      delete process.env.CRON_TIMEZONE;
+      delete process.env.CRON_ENABLED;
+
+      const config = getCronConfigFromEnv();
+
+      expect(config.pattern).toBe('40 11 * * 6'); // Saturday 11:40 AM
+      expect(config.timezone).toBe('Europe/Berlin');
+      expect(config.enabled).toBe(false);
+    });
+
+    it('should handle different enabled values', () => {
+      process.env.CRON_ENABLED = '1';
+      let config = getCronConfigFromEnv();
+      expect(config.enabled).toBe(true);
+
+      process.env.CRON_ENABLED = 'TRUE';
+      config = getCronConfigFromEnv();
+      expect(config.enabled).toBe(true);
+
+      process.env.CRON_ENABLED = 'false';
+      config = getCronConfigFromEnv();
+      expect(config.enabled).toBe(false);
+
+      process.env.CRON_ENABLED = '0';
+      config = getCronConfigFromEnv();
+      expect(config.enabled).toBe(false);
     });
   });
 });
