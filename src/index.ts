@@ -9,6 +9,21 @@ export const greeting = (name: string): string => {
   return `Hello, ${name}!`;
 };
 
+export const getAlarmConfigFromEnv = (): DiveraAlarmRequest => {
+  return {
+    title: process.env.ALARM_TITLE || 'Test Alarm from Node.js Service',
+    text:
+      process.env.ALARM_TEXT ||
+      'This is a test alarm created by the Divera Probe Alarm service.',
+    priority: process.env.ALARM_PRIORITY
+      ? parseInt(process.env.ALARM_PRIORITY, 10)
+      : 1,
+    foreign_id: `alarm-${Date.now()}`,
+    address: process.env.ALARM_ADDRESS || 'Test Address, Test City',
+    announcement: false,
+  };
+};
+
 export const createDiveraAlarm = async (
   alarmData: DiveraAlarmRequest
 ): Promise<void> => {
@@ -34,18 +49,17 @@ export const createDiveraAlarm = async (
 export const main = async (): Promise<void> => {
   console.log(greeting('Divera Probe Alarm Service'));
 
-  // Example alarm data
-  const exampleAlarm: DiveraAlarmRequest = {
-    title: 'Test Alarm from Node.js Service',
-    text: 'This is a test alarm created by the Divera Probe Alarm service.',
-    priority: 1,
-    foreign_id: `test-${Date.now()}`,
-    address: 'Test Address, Test City',
-    announcement: false,
-  };
+  // Load alarm configuration from environment variables
+  const alarmData = getAlarmConfigFromEnv();
 
-  console.log('\n🚨 Creating test alarm...');
-  await createDiveraAlarm(exampleAlarm);
+  console.log('\n🚨 Creating alarm with configuration:');
+  console.log(`  Title: ${alarmData.title}`);
+  console.log(`  Text: ${alarmData.text}`);
+  console.log(`  Priority: ${alarmData.priority}`);
+  console.log(`  Address: ${alarmData.address}`);
+  console.log(`  Foreign ID: ${alarmData.foreign_id}`);
+
+  await createDiveraAlarm(alarmData);
 };
 
 if (require.main === module) {

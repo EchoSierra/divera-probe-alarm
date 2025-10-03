@@ -1,4 +1,8 @@
-import { greeting, createDiveraAlarm } from '../src/index';
+import {
+  greeting,
+  createDiveraAlarm,
+  getAlarmConfigFromEnv,
+} from '../src/index';
 import { DiveraService } from '../src/services/divera.service';
 import { DiveraAlarmRequest } from '../src/types/divera';
 
@@ -111,6 +115,72 @@ describe('Index functions', () => {
         '❌ Error creating alarm:',
         mockError
       );
+    });
+  });
+
+  describe('getAlarmConfigFromEnv function', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterAll(() => {
+      process.env = originalEnv;
+    });
+
+    it('should use environment variables when available', () => {
+      process.env.ALARM_TITLE = 'Custom Alarm Title';
+      process.env.ALARM_TEXT = 'Custom alarm text';
+      process.env.ALARM_PRIORITY = '3';
+      process.env.ALARM_ADDRESS = 'Custom Address';
+
+      const config = getAlarmConfigFromEnv();
+
+      expect(config.title).toBe('Custom Alarm Title');
+      expect(config.text).toBe('Custom alarm text');
+      expect(config.priority).toBe(3);
+      expect(config.address).toBe('Custom Address');
+      expect(config.announcement).toBe(false);
+      expect(config.foreign_id).toMatch(/^alarm-\d+$/);
+    });
+
+    it('should use default values when environment variables are not set', () => {
+      delete process.env.ALARM_TITLE;
+      delete process.env.ALARM_TEXT;
+      delete process.env.ALARM_PRIORITY;
+      delete process.env.ALARM_ADDRESS;
+
+      const config = getAlarmConfigFromEnv();
+
+      expect(config.title).toBe('Test Alarm from Node.js Service');
+      expect(config.text).toBe(
+        'This is a test alarm created by the Divera Probe Alarm service.'
+      );
+      expect(config.priority).toBe(1);
+      expect(config.address).toBe('Test Address, Test City');
+      expect(config.announcement).toBe(false);
+      expect(config.foreign_id).toMatch(/^alarm-\d+$/);
+    });
+
+    it('should handle invalid priority values', () => {
+      process.env.ALARM_PRIORITY = 'invalid';
+
+      const config = getAlarmConfigFromEnv();
+
+      expect(config.priority).toBeNaN();
+    });
+
+    it('should generate unique foreign_id for each call', async () => {
+      const config1 = getAlarmConfigFromEnv();
+      // Small delay to ensure different timestamp
+      await new Promise(resolve => setTimeout(resolve, 1));
+      const config2 = getAlarmConfigFromEnv();
+
+      expect(config1.foreign_id).not.toBe(config2.foreign_id);
+      expect(config1.foreign_id).toMatch(/^alarm-\d+$/);
+      expect(config2.foreign_id).toMatch(/^alarm-\d+$/);
     });
   });
 });

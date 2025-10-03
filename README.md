@@ -31,16 +31,20 @@ npm install
 cp .env.example .env
 ```
 
-2. Edit `.env` and add your Divera247 API key:
+2. Edit `.env` and configure your settings:
 
 ```bash
+# Required: Your Divera247 API key
 DIVERA_WEB_API_KEY=your_actual_api_key_here
-```
 
-3. Optionally, customize the API base URL:
-
-```bash
+# Optional: API base URL (defaults to https://api.divera247.com/api/v1)
 DIVERA_API_BASE_URL=https://api.divera247.com/api/v1
+
+# Optional: Alarm configuration
+ALARM_TITLE=Test Alarm vom Divera Probe Service
+ALARM_TEXT=Dies ist ein Testalarm, der vom Divera Probe Alarm Service generiert wurde.
+ALARM_PRIORITY=1
+ALARM_ADDRESS=Testadresse, Teststadt
 ```
 
 ## Development
