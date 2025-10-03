@@ -26,7 +26,7 @@ export class DiveraService {
       baseURL:
         baseURL ||
         process.env.DIVERA_API_BASE_URL ||
-        'https://api.divera247.com/api/v1',
+        'https://app.divera247.com/api',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
